@@ -1,10 +1,12 @@
 from django.shortcuts import render # nebudeme potřebovat
-from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework import viewsets
 from rest_framework import filters
 from rest_framework.authentication import TokenAuthentication
+from rest_framework.settings import api_settings
+from rest_framework.authtoken.views import ObtainAuthToken
 from profiles_api import serializers
 from profiles_api import models
 from profiles_api import permissions
@@ -107,3 +109,8 @@ class UserProfileViewset(viewsets.ModelViewSet): # django zná veškeré akce, k
     permission_classes = (permissions.UpdateOwnProfile,)
     filter_backends = (filters.SearchFilter,) # vestavěné vyhledávání v djangu
     search_fields = ('name', 'email',) # pole, kde se bude hledat
+
+
+class UserLoginAPIView(ObtainAuthToken): # může se přidat do urls.py jak je, by default neumí pracovat v browseru
+    """Handle creating user authentication tokens"""
+    renderer_classes = api_settings.DEFAULT_RENDERER_CLASSES #přidá ObtainAuthTokenu renderování
